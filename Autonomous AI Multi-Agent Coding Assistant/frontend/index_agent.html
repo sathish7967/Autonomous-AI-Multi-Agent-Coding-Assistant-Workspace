@@ -81,7 +81,11 @@
     </main>
 
     <script>
-        const API_BASE = "http://127.0.0.1:8001"; // Connects to Project 2 port 8001
+        // 🔥 PLACE THIS AT THE VERY BOTTOM OF BOTH index_rag.html AND index_agent.html
+const API_BASE = window.location.origin.includes("github.io") 
+    ? "https://onrender.com" // We will replace this with your real Render URL in Phase 3
+    : "http://127.0.0.1:8000"; // Falls back to local testing automatically if opened locally!
+
 
         async function triggerAgentWorkflow() {
             const prompt = document.getElementById('agentTaskInput').value;
