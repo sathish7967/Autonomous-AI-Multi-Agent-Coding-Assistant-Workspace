@@ -56,8 +56,7 @@ async def execute_agent_workflow(request: AgentGenerationRequest):
         )
         developer_chain = developer_prompt | llm | StrOutputParser()
         generated_code = developer_chain.invoke({"plan": plan_text})
-
-        # 🔥 DYNAMIC FIX: Extracts the generated language type and strips raw backtick strings
+        
         import re
         
         # 1. Look for a markdown pattern like ```python or ```java at the beginning of lines
