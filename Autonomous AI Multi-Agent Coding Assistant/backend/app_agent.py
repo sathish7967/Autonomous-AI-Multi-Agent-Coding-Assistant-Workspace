@@ -20,7 +20,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-GROQ_API_KEY = "your_groq_apiF"  # Replace with your actual Groq API key
+GROQ_API_KEY = "your_groq_api"  # Replace with your actual Groq API key
 
 print("[SYSTEM]: Spinning up local engineering mesh array nodes...")
 llm = ChatGroq(
@@ -45,37 +45,41 @@ async def execute_agent_workflow(request: AgentGenerationRequest):
         planner_chain = planner_prompt | llm | StrOutputParser()
         plan_text = planner_chain.invoke({"task": request.prompt})
 
-                # =========================================================================
-        # AGENT NODE 2: The Senior Core Developer (Dynamic Language Identifier)
+        # =========================================================================
+        # AGENT NODE 2: The Senior Core Developer (Dynamic Language Enforcer)
         # =========================================================================
         developer_prompt = ChatPromptTemplate.from_template(
             "You are a Senior Systems Engineer. Write clean, complete, runnable code based "
             "on this software implementation plan:\n{plan}.\n"
-            "Output your response using standard markdown code blocks (e.g., ```java or ```python) "
-            "to clearly specify the target programming language you are using. Do not add chat explanations."
+            "STRICT SYSTEM PARAMETERS:\n"
+            "- If the task asks for SQL, return ONLY the raw SQL queries. Do NOT wrap it in Java, Python, or JDBC database code.\n"
+            "- If the task asks for Java, return Java. If it asks for C++, return C++.\n"
+            "- Wrap your response in markdown code fences specifying the exact language identifier (e.g., ```sql or ```java)."
         )
         developer_chain = developer_prompt | llm | StrOutputParser()
         generated_code = developer_chain.invoke({"plan": plan_text})
-        
+
+        # Dynamic Extraction Parsing Logic
         import re
         
-        # 1. Look for a markdown pattern like ```python or ```java at the beginning of lines
         detected_lang = "GENERIC"
+        # Extract the language tag directly from the opening backticks string
         match = re.search(r"```([a-zA-Z0-9+#\-]+)", generated_code)
-        
         if match:
-            # Captures the text string right after the three backticks and makes it uppercase
             detected_lang = match.group(1).upper()
             
-        # 2. Split lines and completely strip out the formatting rows (```)
+        # Strip out markdown backtick lines and standalone language headers
         code_lines = generated_code.split("\n")
         cleaned_lines = []
-        
         for line in code_lines:
-            # Skip any lines that contain backticks or match standalone language labels
-            if "```" in line or line.strip().lower() in ["python", "java", "javascript", "cpp", "c++", "html", "css", "sql", "go", "rust"]:
+            strip_line = line.strip().lower()
+            if "```" in strip_line or strip_line in ["python", "java", "javascript", "cpp", "c++", "html", "css", "sql", "go", "rust"]:
                 continue
             cleaned_lines.append(line)
+            
+        pure_source_code = "\n".join(cleaned_lines).strip()
+        generated_code = f"[DETECTED ENGINE RESOURCE LAYER: {detected_lang}]\n\n{pure_source_code}"
+
             
         # 3. Rebuild the text block with a professional header declaring the exact language
         pure_source_code = "\n".join(cleaned_lines).strip()
