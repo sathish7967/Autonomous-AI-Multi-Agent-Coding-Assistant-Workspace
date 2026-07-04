@@ -20,7 +20,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-GROQ_API_KEY = "Your_Groq_API_Key_Here"  # Replace with your actual Groq API key
+GROQ_API_KEY = "your_groq_apiF"  # Replace with your actual Groq API key
 
 print("[SYSTEM]: Spinning up local engineering mesh array nodes...")
 llm = ChatGroq(
@@ -45,17 +45,43 @@ async def execute_agent_workflow(request: AgentGenerationRequest):
         planner_chain = planner_prompt | llm | StrOutputParser()
         plan_text = planner_chain.invoke({"task": request.prompt})
 
-        # =========================================================================
-        # AGENT NODE 2: The Senior Core Developer (Raw String + Safe JSON Extract)
+                # =========================================================================
+        # AGENT NODE 2: The Senior Core Developer (Dynamic Language Identifier)
         # =========================================================================
         developer_prompt = ChatPromptTemplate.from_template(
-            "You are a Senior Systems Engineer. Write clean, complete, runnable Python code based "
+            "You are a Senior Systems Engineer. Write clean, complete, runnable code based "
             "on this software implementation plan:\n{plan}.\n"
-            "Return ONLY the raw python script blocks. Do not add explanations, conversational text, "
-            "or markdown backticks."
+            "Output your response using standard markdown code blocks (e.g., ```java or ```python) "
+            "to clearly specify the target programming language you are using. Do not add chat explanations."
         )
         developer_chain = developer_prompt | llm | StrOutputParser()
         generated_code = developer_chain.invoke({"plan": plan_text})
+
+        # 🔥 DYNAMIC FIX: Extracts the generated language type and strips raw backtick strings
+        import re
+        
+        # 1. Look for a markdown pattern like ```python or ```java at the beginning of lines
+        detected_lang = "GENERIC"
+        match = re.search(r"```([a-zA-Z0-9+#\-]+)", generated_code)
+        
+        if match:
+            # Captures the text string right after the three backticks and makes it uppercase
+            detected_lang = match.group(1).upper()
+            
+        # 2. Split lines and completely strip out the formatting rows (```)
+        code_lines = generated_code.split("\n")
+        cleaned_lines = []
+        
+        for line in code_lines:
+            # Skip any lines that contain backticks or match standalone language labels
+            if "```" in line or line.strip().lower() in ["python", "java", "javascript", "cpp", "c++", "html", "css", "sql", "go", "rust"]:
+                continue
+            cleaned_lines.append(line)
+            
+        # 3. Rebuild the text block with a professional header declaring the exact language
+        pure_source_code = "\n".join(cleaned_lines).strip()
+        generated_code = f"[DETECTED ENGINE RESOURCE LAYER: {detected_lang}]\n\n{pure_source_code}"
+
 
         # =========================================================================
         # AGENT NODE 3: The Automated QA Compilation Tester
