@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autonomous AI Multi-Agent Coding Workspace</title>
+    <style>
+        :root { --bg: #060913; --card-bg: #0f1526; --border: #1e293b; --text: #f1f5f9; --text-dark: #64748b; --amber: #f59e0b; --emerald: #10b981; --sky: #0ea5e9; --primary: #2563eb; }
+        body { background-color: var(--bg); color: var(--text); font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; margin: 0; padding: 0; }
+        
+        header { background-color: #02040a; border-bottom: 1px solid var(--border); padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+        header h1 { margin: 0; font-size: 20px; font-weight: 800; color: var(--amber); background: linear-gradient(to right, #f59e0b, #fbbf24); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        header p { margin: 4px 0 0 0; font-size: 11px; color: var(--text-dark); font-weight: 500; }
+        .mesh-badge { background: rgba(245, 158, 11, 0.08); border: 1px solid rgba(245, 158, 11, 0.25); padding: 6px 14px; border-radius: 30px; font-size: 11px; font-weight: 700; color: #fbbf24; text-transform: uppercase; letter-spacing: 0.05em; }
+        
+        main { max-width: 1600px; margin: 0 auto; padding: 32px; display: flex; flex-direction: column; gap: 24px; }
+        .control-input-panel { background-color: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .control-input-panel label { font-size: 11px; text-transform: uppercase; font-weight: bold; color: #94a3b8; display: block; margin-bottom: 10px; letter-spacing: 0.04em; }
+        .input-row { display: flex; gap: 14px; }
+        .input-row input { flex: 1; background-color: #02040a; border: 1px solid var(--border); border-radius: 8px; padding: 14px; color: white; font-size: 13.5px; outline: none; transition: border-color 0.2s; }
+        .input-row input:focus { border-color: var(--amber); }
+        .input-row button { background-color: var(--amber); color: #02040a; border: 0; font-weight: 800; padding: 0 28px; border-radius: 8px; cursor: pointer; text-transform: uppercase; font-size: 12px; letter-spacing: 0.02em; transition: opacity 0.2s; box-shadow: 0 4px 14px rgba(245, 158, 11, 0.3); }
+        .input-row button:hover { opacity: 0.9; }
+        
+        .agent-mesh-grid { display: grid; grid-template-columns: 1fr 1.2fr 1fr; gap: 24px; }
+        .agent-node-card { background-color: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 20px; display: flex; flex-direction: column; box-shadow: 0 4px 20px rgba(0,0,0,0.15); }
+        .agent-node-card h3 { margin: 0 0 14px 0; font-size: 12px; font-weight: 800; padding-bottom: 10px; border-bottom: 1px solid var(--border); letter-spacing: 0.04em; }
+        .log-box { flex: 1; background-color: #02040a; border: 1px solid #1e293b; border-radius: 8px; padding: 16px; font-size: 12.5px; line-height: 1.6; overflow-y: auto; height: 420px; box-shadow: inset 0 2px 10px rgba(0,0,0,0.5); }
+        
+        .status-pill { padding: 5px 12px; border-radius: 20px; font-weight: 800; font-size: 10.5px; display: inline-block; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.04em; }
+        .status-pending { background-color: rgba(245, 158, 11, 0.08); border: 1px solid rgba(245, 158, 11, 0.2); color: var(--amber); }
+        .status-passed { background-color: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.25); color: var(--emerald); }
+        .status-failed { background-color: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.25); color: #f87171; }
+        
+        .pulse { color: var(--amber); animation: fadeBlink 1.6s infinite; }
+        @keyframes fadeBlink { 50% { opacity: 0.3; } }
+    </style>
+</head>
+<body>
+    <header>
+        <div>
+            <h1>🤖 Multi-Agent Autonomous Coding Assistant Workspace</h1>
+            <p>Stateful system compilation execution loops via concurrent task agents</p>
+        </div>
+        <div class="mesh-badge">Active Mesh Network: 3 Connected Nodes</div>
+    </header>
+
+    <main>
+        <!-- Requirement Collector Module -->
+        <div class="control-input-panel">
+            <label>Specify System Feature Requirements Scope</label>
+            <div class="input-row">
+                <input type="text" id="agentTaskInput" placeholder="e.g., Build a python function to compute recursive matrix transpositions safely..."/>
+                <button onclick="triggerAgentWorkflow()">Launch Mesh Loop</button>
+            </div>
+        </div>
+
+        <!-- 3-Column Agent Terminal Infrastructure Mesh Grid -->
+        <div class="agent-mesh-grid">
+            <!-- Column 1: Node Alpha -->
+            <div class="agent-node-card">
+                <h3 style="color: var(--sky);">[NODE ALPHA]: ARCHITECTURAL PLANNER</h3>
+                <div class="log-box" id="plannerLog" style="color: #94a3b8; white-space: pre-wrap;">System idle. Awaiting microservices task inputs...</div>
+            </div>
+            
+            <!-- Column 2: Node Beta -->
+            <div class="agent-node-card">
+                <h3 style="color: var(--emerald);">[NODE BETA]: SENIOR DEVELOPMENT COMPILER</h3>
+                <pre class="log-box" id="compilerLog" style="color: #34d399; margin: 0; font-family: inherit;"># Workspace layer idle. Awaiting compiled syntax stream data...</pre>
+            </div>
+            
+            <!-- Column 3: Node Gamma -->
+            <div class="agent-node-card">
+                <h3 style="color: #f87171;">[NODE GAMMA]: AUTOMATED QA INTEGRATOR</h3>
+                <div class="log-box" id="qaLog">
+                    <div style="margin-bottom: 16px;"><span style="color: var(--text-dark); font-weight:700;">Assertion Verdict:</span> <br><span id="qaStatusField" class="status-pill status-pending">INACTIVE</span></div>
+                    <div><span style="color: var(--text-dark); font-weight:700;">Telemetry Diagnostics Summary:</span><p id="qaFeedbackField" style="color: #94a3b8; margin: 8px 0 0 0; line-height:1.6;">Automated checking arrays offline.</p></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const API_BASE = "http://127.0.0.1:8001"; // Connects to Project 2 port 8001
+
+        async function triggerAgentWorkflow() {
+            const prompt = document.getElementById('agentTaskInput').value;
+            if(!prompt) return;
+
+            const plannerLog = document.getElementById('plannerLog');
+            const compilerLog = document.getElementById('compilerLog');
+            const qaStatus = document.getElementById('qaStatusField');
+            const qaFeedback = document.getElementById('qaFeedbackField');
+
+            plannerLog.className = "log-box pulse"; plannerLog.innerText = "Analyzing architectural constraints and planning algorithmic steps...";
+            compilerLog.className = "log-box pulse"; compilerLog.innerText = "# Initializing code canvas environment templates...";
+            qaStatus.innerText = "EVALUATING MESH"; qaStatus.className = "status-pill status-pending pulse";
+            qaFeedback.innerText = "Standing by for continuous verification assertions...";
+
+            try {
+                const response = await fetch(`${API_BASE}/execute-workflow`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ prompt: prompt })
+                });
+                const resData = await response.json();
+                
+                if(response.ok) {
+                    plannerLog.className = "log-box"; plannerLog.innerText = resData.plan;
+                    compilerLog.className = "log-box"; compilerLog.innerText = resData.code;
+                    
+                    qaStatus.className = "";
+                    if(resData.qa_status.toUpperCase() === "PASSED") { 
+                        qaStatus.innerText = "PASSED"; qaStatus.className = "status-pill status-passed"; 
+                    } else { 
+                        qaStatus.innerText = "FIX REQUIRED"; qaStatus.className = "status-pill status-failed"; 
+                    }
+                    
+                    qaFeedback.innerText = resData.qa_feedback;
+                } else { throw new Error(resData.detail); }
+            } catch(e) {
+                plannerLog.className = "log-box"; plannerLog.innerText = "Mesh workflow execution faulted.";
+                compilerLog.className = "log-box"; compilerLog.innerText = `# Local process runtime aggregation error:\n${e.message}`;
+                compilerLog.style.color = "#f87171";
+                qaStatus.innerText = "ERROR"; qaStatus.className = "status-pill status-failed";
+                qaFeedback.innerText = "Diagnostics channel blocked due to server connection dropout.";
+            }
+        }
+    </script>
+</body>
+</html>
