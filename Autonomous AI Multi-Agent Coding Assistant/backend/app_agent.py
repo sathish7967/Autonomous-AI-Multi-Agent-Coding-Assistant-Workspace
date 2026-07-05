@@ -20,7 +20,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-GROQ_API_KEY = "your_groq_api"  # Replace with your actual Groq API key
+GROQ_API_KEY = "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"  # Replace with your actual Groq API key
 
 print("[SYSTEM]: Spinning up local engineering mesh array nodes...")
 llm = ChatGroq(
